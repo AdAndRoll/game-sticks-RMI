@@ -2,7 +2,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface GameInterface extends Remote {
-
     // Метод для начала игры
     void startGame() throws RemoteException;
 
@@ -12,15 +11,15 @@ public interface GameInterface extends Remote {
     // Метод для получения текущего игрока
     String getCurrentPlayer() throws RemoteException;
 
-    // Метод для проверки окончания игры
-    boolean isGameOver() throws RemoteException;
-
-    // Метод для получения победителя игры
-    String getWinner() throws RemoteException;
-
-    // Метод для получения всех горизонтальных линий
+    // Метод для получения состояния игры (горизонтальные линии)
     boolean[][] getHorizontalLines() throws RemoteException;
 
-    // Метод для получения всех вертикальных линий
+    // Метод для получения состояния игры (вертикальные линии)
     boolean[][] getVerticalLines() throws RemoteException;
+
+    // Метод для получения состояния квадратов (X или O в квадратах)
+    char[][] getSquares() throws RemoteException;
+
+    // Метод для получения победителя
+    String getWinner() throws RemoteException;
 }
