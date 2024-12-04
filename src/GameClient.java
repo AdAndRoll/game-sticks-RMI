@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 
 public class GameClient extends JFrame {
 
@@ -10,6 +11,8 @@ public class GameClient extends JFrame {
 
             // Создаем панель с сервером
             DotsAndBoxesGamePanel gamePanel = new DotsAndBoxesGamePanel(server);
+
+
 
             // Настройки окна
             setTitle("Dots and Boxes");

@@ -1,5 +1,7 @@
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameServer extends UnicastRemoteObject implements GameInterface {
     private static final int GRID_SIZE = 3;
@@ -7,13 +9,38 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
     private final boolean[][] vertical;
     private final char[][] squares;
     private boolean player1Turn = true;
-
+    private List<GameInterface> clients = new ArrayList<>();
     public GameServer() throws RemoteException {
         horizontal = new boolean[GRID_SIZE + 1][GRID_SIZE];
         vertical = new boolean[GRID_SIZE][GRID_SIZE + 1];
         squares = new char[GRID_SIZE][GRID_SIZE];
     }
+    // Метод для регистрации клиентов
+    public void addClient(GameInterface client) throws RemoteException {
+        clients.add(client);
+    }
 
+    // Метод для удаления клиента
+    public void removeClient(GameInterface client) throws RemoteException {
+        clients.remove(client);
+    }
+    // Метод для уведомления всех клиентов об обновлениях
+    private void notifyClients() {
+        for (GameInterface client : clients) {
+            try {
+                // Обновляем состояние игры на каждом клиенте
+                client.updateStateFromServer();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    @Override
+    public void notifyMoveMade() throws RemoteException {
+        for (GameInterface client : clients) {
+            client.notifyMoveMade(); // Вызываем метод уведомления на клиенте
+        }
+    }
     @Override
     public void startGame() throws RemoteException {
         // Инициализация игры
@@ -22,6 +49,11 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
                 squares[row][col] = '\0';  // Пустые квадраты
             }
         }
+    }
+    @Override
+    public void updateStateFromServer() throws RemoteException {
+        // Этот метод может быть вызван сервером для обновления состояния на клиенте.
+        notifyClients();
     }
 
     @Override
@@ -41,7 +73,9 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
             if (!squareMade) {
                 togglePlayer();
             }
-
+            // Уведомляем всех клиентов об изменении состояния
+            notifyClients();
+            notifyMoveMade();
             return "Линия нарисована!";
         }
         return "Некорректный ход!";

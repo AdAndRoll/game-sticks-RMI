@@ -8,6 +8,7 @@ public class GameServerApp {
             GameServer server = new GameServer();
             Naming.rebind("GameServer", server);
             System.out.println("Сервер запущен");
+
         } catch (Exception e) {
             System.out.println("Ошибка запуска сервера: " + e.getMessage());
         }

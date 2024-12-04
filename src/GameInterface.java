@@ -22,4 +22,8 @@ public interface GameInterface extends Remote {
 
     // Метод для получения победителя
     String getWinner() throws RemoteException;
+    void updateStateFromServer() throws RemoteException;
+    void notifyMoveMade() throws RemoteException; // Новый метод для уведомления клиентов
+
+    void addClient(GameInterface client) throws RemoteException;
 }
